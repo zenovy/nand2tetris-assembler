@@ -19,6 +19,7 @@ def divTill(num, width):
 
 lc = 0
 new_address_counter = 16
+compiled_lines = []
 
 filename = sys.argv[1]
 
@@ -38,29 +39,33 @@ while p.hasMoreCommands():
 p = Parser(filename)
 st = SymbolTable()
 while (p.hasMoreCommands()):
-  # print("Input: '{0}'".format(p.current_line))
-  # print("CommandType: {0}".format(p.commandType()))
+  print("\nInput: '{0}'".format(p.current_line))
+  print("CommandType: {0}".format(p.commandType()))
   if p.commandType() == "C_COMMAND":
     dest = p.dest()
     comp = p.comp()
     jump = p.jump()
-    print("111{0}{1}{2}".format(Code.comp(comp), Code.dest(dest), Code.jump(jump)))
-  else :
+    instruction = "111{0}{1}{2}".format(Code.comp(comp), Code.dest(dest), Code.jump(jump))
+    print(instruction)
+    compiled_lines.append(instruction)
+  else:
     symbol = p.symbol()
     # print("Symbol: {0}".format(symbol))
     if p.commandType() == "A_COMMAND":
-      if st.contains(symbol):
+      address = ""
+      if symbol.isdigit():
+        address = symbol
+      elif st.contains(symbol):
         address = st.getAddress(symbol)
-        bin_address = divTill(int(address), 15)
-        print("0{0}".format(bin_address))
       else:
-        if symbol.isdigit():
-          bin_address = divTill(int(symbol), 15)
-          print("0{0}".format(bin_address))
-        else:
-          st.addEntry(symbol, new_address_counter)
-          bin_address = divTill(int(new_address_counter), 15)
-          new_address_counter += 1
-          print("0{0}".format(bin_address))
+        st.addEntry(symbol, new_address_counter)
+        address = new_address_counter
+      bin_address = divTill(int(address), 15)
+      instruction = "0{0}".format(bin_address)
+      print(instruction)
+      compiled_lines.append(instruction)
   p.advance()
 
+new_file = filename.rstrip('asm').rstrip('.') + '.hack'
+with open(new_file, 'w') as file:
+  file.write('\n'.join(compiled_lines))
