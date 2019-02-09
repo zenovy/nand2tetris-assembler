@@ -12,7 +12,7 @@ def stripComment(line):
 
 class Parser:
   l_regex = re.compile('\((.*)\)') 
-  a_regex = re.compile('@(\w*)')
+  a_regex = re.compile('@(.*)')
 
   def __init__(self, filepath):
     self.file = open(filepath, 'r')

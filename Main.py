@@ -37,7 +37,6 @@ while p.hasMoreCommands():
 
 # Second Pass
 p = Parser(filename)
-st = SymbolTable()
 while (p.hasMoreCommands()):
   print("\nInput: '{0}'".format(p.current_line))
   print("CommandType: {0}".format(p.commandType()))
@@ -60,6 +59,7 @@ while (p.hasMoreCommands()):
       else:
         st.addEntry(symbol, new_address_counter)
         address = new_address_counter
+        new_address_counter += 1
       bin_address = divTill(int(address), 15)
       instruction = "0{0}".format(bin_address)
       print(instruction)
